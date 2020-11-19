@@ -1,0 +1,26 @@
+{
+  "name": "digibook",
+  "version": "1.0.0",
+  "description": "backend web server for digibook",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "digibook-backendsv"
+  },
+  "keywords": [
+    "backenddev"
+  ],
+  "author": "ferjhous",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "mongoose": "^5.10.15",
+    "nodemon": "^2.0.6",
+    "tesseract.js": "^2.1.4"
+  }
+}
