@@ -13,9 +13,11 @@ booksearch.get('/',(req,res) => {
 // TODO: is this async ?
 booksearch.get('/search', (req,res,next) => {
 // lets suppose we have a booksearch(text) function
-    //res.send(req.body);
+    // maybe adding var inside of the url string can be better?
+    let ch = "https://www.googleapis.com/books/v1/volumes?q='"+req.body.text+"'&printType=books&langRestrict=en&orderBy=relevance&maxResults=1&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
+    console.log(ch);
     const options = {
-        url: 'https://www.googleapis.com/books/v1/volumes?q=0000&printType=books&langRestrict=fr&orderBy=relevance&maxResults=1&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4',
+        url: ch,
         method: 'GET'
     };
     request(options, function(err, gres, body) {
