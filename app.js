@@ -23,6 +23,8 @@ mongoose.connect(process.env.DB_CONNECTION,options, ()=>
 // import routes modules
 const testroute = require('./routes/testroute');
 app.use('/testroute',testroute);
+const booksearch = require('./routes/booksearch');
+app.use('/booksearch', booksearch);
 
 //middlewares
 app.use('/ocrtest', (req,res) => {
