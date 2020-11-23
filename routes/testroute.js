@@ -4,7 +4,7 @@ const testschema = require('../models/dbtest'); // load our model
 
 //gets back all "testscehams" (how to bind these data with just this route)
 router.get('/', async(req,res) => {
-    // res.send('you are on testroute'); you cant have multiple res, once responded its done
+    // res.send('you are on testroute'); you cant have multiple res, once responded its done, just use res.end() anyways for this kinda of response, ur not answering with data
     try{
         const Allschemas = await testschema.find();
         res.json(Allschemas);
