@@ -22,16 +22,16 @@ mongoose.connect(process.env.DB_CONNECTION,options, ()=>
 
 // import routes modules
 const testroute = require('./routes/testroute');
-app.use('/testroute',testroute);
+app.use('/dbtest',testroute);
 const booksearch = require('./routes/booksearch');
 app.use('/booksearch', booksearch);
 
 //middlewares
 app.use('/ocrtest', (req,res) => {
     console.log('tessereact example exec');
-    res.send("this is ocr tesseract test page")
+    res.send("this is ocr tesseract test page check console")
     Tesseract.recognize(
-      'https://tesseract.projectnaptha.com/img/eng_bw.png',
+      'https://i.redd.it/j9qsteokyh631.jpg',
       'eng',
       { logger: m => console.log(m) }
     ).then(({ data: { text } }) => {
