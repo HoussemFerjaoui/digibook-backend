@@ -23,6 +23,7 @@ booksearch.get('/search', (req,res,next) => {
     request(options, function(err, gres, body) {
         let json = JSON.parse(body);
         res.send(json);
+        console.log(json.items[0].volumeInfo.title);
     });
 });
 

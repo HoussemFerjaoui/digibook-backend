@@ -25,6 +25,8 @@ const testroute = require('./routes/testroute');
 app.use('/dbtest',testroute);
 const booksearch = require('./routes/booksearch');
 app.use('/booksearch', booksearch);
+const auth = require('./routes/auth');
+app.use('/api/user', auth);
 
 //middlewares
 app.use('/ocrtest', (req,res) => {
@@ -59,6 +61,3 @@ app.get('/users/:userId/books/:bookId', function (req, res) {
 
 // listen to server
 app.listen(3000);
-
-
-//hello there 
