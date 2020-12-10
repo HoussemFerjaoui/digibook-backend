@@ -25,8 +25,13 @@ const testroute = require('./routes/testroute');
 app.use('/dbtest',testroute);
 const booksearch = require('./routes/booksearch');
 app.use('/booksearch', booksearch);
+// load auth.js
 const auth = require('./routes/auth');
 app.use('/api/user', auth);
+// load CurrentSession.js
+const CurrentSession = require("./functions/CurrentSession");
+app.use("/api/CurrentSession", CurrentSession);
+
 
 //middlewares
 app.use('/ocrtest', (req,res) => {
@@ -52,6 +57,10 @@ app.get('/', (req, res) => {
     res.send('Welcome!');
 });
 
+app.get('/hey', (req,res) => {
+  res.send("hey");
+});
+
 //route param test
 app.get('/users/:userId/books/:bookId', function (req, res) {
     res.send(req.params)
@@ -60,4 +69,4 @@ app.get('/users/:userId/books/:bookId', function (req, res) {
 
 
 // listen to server
-app.listen(3000);
+app.listen(3000, "0.0.0.0");
