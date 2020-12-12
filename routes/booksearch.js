@@ -50,7 +50,6 @@ booksearch.post('/search', (req,res,next) => {
                     fetch(turl, { method: 'GET'})
                         .then(res => res.json())
                         .then(json => res.send(json));
-                        next();
                   }) 
                 .catch(error => {
                     console.log(error.message)
