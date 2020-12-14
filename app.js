@@ -38,7 +38,7 @@ app.use('/ocrtest', (req,res) => {
     console.log('tessereact example exec');
     res.send("this is ocr tesseract test page check console")
     Tesseract.recognize(
-      'https://i.redd.it/j9qsteokyh631.jpg',
+      'https://img.picturequotes.com/2/991/990443/planting-a-flowers-like-opening-a-book-because-either-way-youre-starting-something-and-your-gardens-quote-1.jpg',
       'eng',
       { logger: m => console.log(m) }
     ).then(({ data: { text } }) => {

@@ -9,6 +9,8 @@ const { json } = require('body-parser');
 const fetch = require('node-fetch'); //NO NEED , using request module for eror handling
 var fs = require('fs');
 const { nextTick } = require('process');
+const TextCleaner = require('text-cleaner');
+
 
 //const { path } = require('dotenv/lib/env-options');
 
@@ -50,18 +52,13 @@ booksearch.post('/search', (req,res,next) => {
                 .then(({ data: { text } }) => {
                     // doing the request to external API with the converted text
                     // the problem I had with this : using synch functionaities with an async functionalities, basicaly the synch will get executed while the async still processing AND calling next(), put next in its own then promise after the thing is done.
-                    let ch = "https://www.googleapis.com/books/v1/volumes?q='"+text+"'&printType=books&langRestrict=en&orderBy=relevance&maxResults=3&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
-                    console.log(ch);
-                    const options = {
-                        url: ch,
-                        method: 'GET'
-                    };
-                    request(options, function(err, gres, body) {
-                        let json = JSON.parse(body);
-                        res.send(json);
-                        console.log(json.items[0].volumeInfo.title);
-                    });
-                  }) 
+                    //let cleantext = TextCleaner(String(text)).removeApostrophes().removeDashes().removeHtmlEntities().removeChars({exclude: "0-9"}).trim().condense().toString();
+                    let cleantext = TextCleaner(String(text)).removeDashes().removeHtmlEntities().trim().condense().toString();
+                    let turl = "https://www.googleapis.com/books/v1/volumes?q=\""+cleantext+"\"&printType=books&langRestrict=en&orderBy=relevance&maxResults=1&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
+                    fetch(encodeURI(turl), { method: 'GET'})
+                        .then(res => res.json())
+                        .then(json => res.send(json)).then(console.log(encodeURI(turl))).then(console.log(turl)).then(console.log(text));
+                  })
                 .catch(error => {
                     console.log(error.message)
                 })
