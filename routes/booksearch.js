@@ -35,7 +35,10 @@ booksearch.get('/', (req,res) => {
     res.end("Welcome to book search route!");
 });
 
+
+
 // bookSearch Route, TODO: Delete uploaded picture after success search!
+// TODO: add a TEXT CLEANER for the converted text!
 booksearch.post('/search', (req,res,next) => {
     //receiving the uploaded pic from frontend and converting the image to text!  
     upload(req, res, (err) => {
@@ -46,10 +49,18 @@ booksearch.post('/search', (req,res,next) => {
             Tesseract.recognize('uploads/' + req.file.filename, 'eng')
                 .then(({ data: { text } }) => {
                     // doing the request to external API with the converted text
-                    let turl = "https://www.googleapis.com/books/v1/volumes?q='"+text+"'&printType=books&langRestrict=en&orderBy=relevance&maxResults=1&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
-                    fetch(turl, { method: 'GET'})
-                        .then(res => res.json())
-                        .then(json => res.send(json));
+                    // the problem I had with this : using synch functionaities with an async functionalities, basicaly the synch will get executed while the async still processing AND calling next(), put next in its own then promise after the thing is done.
+                    let ch = "https://www.googleapis.com/books/v1/volumes?q='"+text+"'&printType=books&langRestrict=en&orderBy=relevance&maxResults=3&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
+                    console.log(ch);
+                    const options = {
+                        url: ch,
+                        method: 'GET'
+                    };
+                    request(options, function(err, gres, body) {
+                        let json = JSON.parse(body);
+                        res.send(json);
+                        console.log(json.items[0].volumeInfo.title);
+                    });
                   }) 
                 .catch(error => {
                     console.log(error.message)
@@ -78,10 +89,11 @@ booksearch.post('/search', (req,res,next) => {
      
 
 // OLD TESTING ROUTE
-/*booksearch.get('/search', (req,res) => {
+booksearch.post('/test', (req,res) => {
 // lets suppose we have a booksearch(text) function
     // maybe adding var inside of the url string can be better?
-    let ch = "https://www.googleapis.com/books/v1/volumes?q='"+req.body.text+"'&printType=books&langRestrict=en&orderBy=relevance&maxResults=1&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
+    let text = "Italians have a little joke, that the world is so hard a man must have two fathers to look after him, and that's why they have godfathers"
+    let ch = "https://www.googleapis.com/books/v1/volumes?q='"+text+"'&printType=books&langRestrict=en&orderBy=relevance&maxResults=3&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
     console.log(ch);
     const options = {
         url: ch,
@@ -92,7 +104,7 @@ booksearch.post('/search', (req,res,next) => {
         res.send(json);
         console.log(json.items[0].volumeInfo.title);
     });
-});*/
+});
 
 
 
