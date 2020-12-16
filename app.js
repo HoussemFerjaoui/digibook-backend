@@ -20,9 +20,14 @@ mongoose.connect(process.env.DB_CONNECTION,options, ()=>
 
 
 
-// import routes modules
+// import routes modules:
+// testroute
 const testroute = require('./routes/testroute');
 app.use('/dbtest',testroute);
+// home
+const home = require('./routes/home');
+app.use('/api/user/home', home);
+// booksearch
 const booksearch = require('./routes/booksearch');
 app.use('/booksearch', booksearch);
 // load auth.js

@@ -1,5 +1,12 @@
 const mongoose = require('mongoose');
 
+
+//notif: {postID: {email: action}}
+/*const notifEmailAction = new mongoose.Schema({
+    type: Map,
+    of: String
+})*/
+//postid , email, action
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -13,6 +20,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    /*notifPostID: {
+        type: Map,
+        of: notifEmailAction
+    },*/
     date: {
         type: Date,
         default: Date.now

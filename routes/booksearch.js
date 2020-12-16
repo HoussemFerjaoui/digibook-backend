@@ -48,7 +48,8 @@ booksearch.post('/search', (req,res,next) => {
             res.send(err);
         } else {
             // converting uploaded image to text
-            Tesseract.recognize('uploads/' + req.file.filename, 'eng')
+            
+            Tesseract.recognize('uploads/' + req.file.filename, 'eng', { logger: m => console.log(m) })
                 .then(({ data: { text } }) => {
                     // doing the request to external API with the converted text
                     // the problem I had with this : using synch functionaities with an async functionalities, basicaly the synch will get executed while the async still processing AND calling next(), put next in its own then promise after the thing is done.
