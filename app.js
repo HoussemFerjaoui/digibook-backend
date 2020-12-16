@@ -4,6 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+app.use(express.static('uploads/profileimages/'))
+
 // tessereact.js
 const Tesseract = require('tesseract.js');
 
@@ -36,6 +38,9 @@ app.use('/api/user', auth);
 // load CurrentSession.js
 const CurrentSession = require("./functions/CurrentSession");
 app.use("/api/CurrentSession", CurrentSession);
+// Load profile.js
+const profile = require("./routes/profile");
+app.use("/api/user/profile", profile);
 
 
 //middlewares
@@ -74,4 +79,4 @@ app.get('/users/:userId/books/:bookId', function (req, res) {
 
 
 // listen to server
-app.listen(3000, "0.0.0.0");
+app.listen(3000);

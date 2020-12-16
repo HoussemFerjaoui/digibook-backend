@@ -24,6 +24,10 @@ const userSchema = new mongoose.Schema({
         type: Map,
         of: notifEmailAction
     },*/
+    picurl: {
+        type: String,
+        default: "uploads/profileimages/default_profile_picture.png"
+    },
     date: {
         type: Date,
         default: Date.now
