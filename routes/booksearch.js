@@ -55,7 +55,7 @@ booksearch.post('/search', (req,res,next) => {
                     // the problem I had with this : using synch functionaities with an async functionalities, basicaly the synch will get executed while the async still processing AND calling next(), put next in its own then promise after the thing is done.
                     //let cleantext = TextCleaner(String(text)).removeApostrophes().removeDashes().removeHtmlEntities().removeChars({exclude: "0-9"}).trim().condense().toString();
                     let cleantext = TextCleaner(String(text)).removeDashes().removeHtmlEntities().trim().condense().toString();
-                    let turl = "https://www.googleapis.com/books/v1/volumes?q=\""+cleantext+"\"&printType=books&langRestrict=en&orderBy=relevance&maxResults=1&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
+                    let turl = "https://www.googleapis.com/books/v1/volumes?q=\""+cleantext+"\"&printType=books&langRestrict=en&orderBy=relevance&maxResults=10&key=AIzaSyDbM6KY3e8LOvB5mDzI6DA1PMn2EbIFMq4"
                     fetch(encodeURI(turl), { method: 'GET'})
                         .then(res => res.json())
                         .then(json => res.send(json)).then(console.log(encodeURI(turl))).then(console.log(turl)).then(console.log(text));

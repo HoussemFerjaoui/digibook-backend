@@ -3,6 +3,8 @@ const profile = express.Router();
 var multer  = require('multer'); 
 const Post = require('../models/post');
 const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+
 
 
 
@@ -40,6 +42,31 @@ profile.post('/uploadpic/:CurrentUserEmail', async(req,res) => {
             console.log(req.file);
         }
     })    
+});
+
+
+//TODO: Control saisie here too. like register.
+profile.post('/update/:email/:password', async(req,res) => {
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+    var user = new User();
+    const validPass = req.body.password.localeCompare(req.params.password) // can remove the decrype, just compare hashed password directly
+    user = req.body;
+    console.log(user, req.params.password);
+    // check if the pass has changed
+    if(validPass){
+        user.password = hashedPassword;
+        console.log(hashedPassword);
+    }
+    console.log(req.params.email, req.body.email ,req.params.password, req.body.password,validPass)
+    try{
+        const uSpecificschema = await User.replaceOne(
+            { email : req.params.email },
+            user);
+        res.json(user); // or res.send("updated!")
+    }catch(err){
+        res.json({ message : err });
+    }
 });
 
 module.exports = profile;
