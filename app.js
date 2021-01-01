@@ -41,6 +41,10 @@ app.use("/api/CurrentSession", CurrentSession);
 // Load profile.js
 const profile = require("./routes/profile");
 app.use("/api/user/profile", profile);
+// Load Notifications.js
+const notifications = require("./routes/notifications");
+app.use("/api/user/notifications", notifications);
+
 
 
 //middlewares

@@ -2,6 +2,8 @@ const express = require('express');
 const home = express.Router(); 
 const Post = require('../models/post');
 const User = require('../models/User');
+const Comment = require('../models/comment');
+
 // const { post, route } = require('./booksearch'); this was added auto
 
 // TODO: Refactor to use promises
@@ -76,7 +78,42 @@ home.get('/likepost/:currentUserEmail/:postOwnerEmail/:postID', async(req,res) =
     }
 });
 
+// get all post's comment
+// as always date = postid
+home.get('/allpostcomments/:date', async(req,res)=>{
+    try{
+        const postcomments = await Comment.find({date: req.params.date});
+        res.json(postcomments); 
+        //console.log(postcomments);
+    }catch(err){
+        res.json({message : err});
+    }
+});
+  
 
-// add findpostByPostID() later if u need it
+// add comment
+home.post('/addcomment', async (req,res)=>{
+    
+    const NewComment = new Comment ({
+      
+      name: req.body.name,
+      email: req.body.email,
+      picurl: req.body.picurl,
+      text: req.body.text,
+      date: req.body.date
+
+  });
+  try{
+    const addedComment = await NewComment.save();
+    res.json(addedComment);
+}catch(err){
+    res.status(400).json({ message: err });
+}
+});
+
+
+
+// todo: count comments
+
 
 module.exports = home;
