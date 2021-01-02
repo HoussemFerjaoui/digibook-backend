@@ -44,7 +44,7 @@ home.post('/addpost', async (req,res) =>{
 
 //likebutton should add/remove the like
 //searchs for post with postID(Date.now) > checks if currentUserEmail in likeslist or not > updates > return likes.length
-// TODO: return status as well , button liked or not
+// TODO: return status as well , button liked or not, DONE I THINK ?
 home.get('/likepost/:currentUserEmail/:postOwnerEmail/:postID', async(req,res) => {
     try{
         // find post by Owner Email

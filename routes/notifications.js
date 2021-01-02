@@ -2,11 +2,13 @@ const express = require('express');
 const notifications = express.Router(); 
 const Notification = require('../models/notification');
 
+// TODO: not display when u action ur own shit
+
 
 // get all notifications by connected user email
-notifications.get('/getallnotifications/:currentemail', async(req,res) => {
+notifications.get('/getallnotifications/:email', async(req,res) => {
     try{
-        const allNotifications = await Notification.find({currentemail: req.params.currentemail});
+        const allNotifications = await Notification.find({email: req.params.email});
         res.json(allNotifications);
     }catch(err){
         res.status(400).json({ message : err });

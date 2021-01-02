@@ -4,7 +4,8 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
-app.use(express.static('uploads/profileimages/'))
+app.use(express.static('uploads'));
+app.use(express.static('uploads/profileimages'));
 
 // tessereact.js
 const Tesseract = require('tesseract.js');

@@ -4,6 +4,8 @@ var multer  = require('multer');
 const Post = require('../models/post');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
+const Book = require('../models/book');
+
 
 
 
@@ -29,13 +31,18 @@ profile.post('/uploadpic/:CurrentUserEmail', async(req,res) => {
         if(err) {
             res.send(err);
         } else {
-            let dest = req.file.destination + req.file.filename;
+            let dest = req.file.filename;
             try{
                 const uSpecificschema = await User.updateOne(
                     { email : req.params.CurrentUserEmail },
                     { $set: { picurl : dest }
                     });
-                res.json(uSpecificschema); // or res.send("updated!")
+                const post = await Post.update(
+                    { email: req.params.CurrentUserEmail },
+                    { $set: { picurl : dest } },
+                    { multi: true}
+                )
+                res.send(req.file.filename); // or res.send("updated!")
             }catch(err){
                 res.json({ message : err });
             }
@@ -66,6 +73,17 @@ profile.post('/update/:email/:password', async(req,res) => {
         res.json(user); // or res.send("updated!")
     }catch(err){
         res.json({ message : err });
+    }
+});
+
+// get favorite books
+profile.get('/allfavbooks/:email', async(req,res)=>{
+    try{
+        const favbooks = await Book.find({favlist: { "$in": req.params.email}});
+        res.json(favbooks); 
+        //console.log(postcomments);
+    }catch(err){
+        res.json({message : err});
     }
 });
 

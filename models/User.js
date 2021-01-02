@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     },*/
     picurl: {
         type: String,
-        default: "uploads/profileimages/default_profile_picture.png"
+        default: "default_profile_picture.png"
     },
     date: {
         type: Date,

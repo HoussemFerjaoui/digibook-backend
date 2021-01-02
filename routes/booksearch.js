@@ -11,6 +11,11 @@ var fs = require('fs');
 const { nextTick } = require('process');
 const TextCleaner = require('text-cleaner');
 
+const Book = require('../models/book');
+const BookComment = require('../models/bookcomment');
+const book = require('../models/book');
+
+
 
 //const { path } = require('dotenv/lib/env-options');
 
@@ -136,7 +141,131 @@ booksearch.post('/test', (req,res) => {
     })    
 });*/
 
+// adds bookid if dosnt already exist
+booksearch.post('/extendedresults', async (req,res) => {
+    // search if bookid exist else add it, if exists getlikes & comments
 
+    // search if bookid exists
+    const bookExist = await Book.findOne({bookid: req.body.bookid});
+    if(bookExist){ 
+        //return res.status(400).send("Bookid already exist");
+
+        res.json(bookExist);
+
+    }else{
+        const book = new Book({
+            bookid: req.body.bookid,
+            bookname: req.body.bookname,
+            bookauthor: req.body.bookauthor,
+            bookcover: req.body.bookcover,
+            upvotelist: req.body.upvotelist,
+            //the rest should be defaulted to null, since its new post
+        });
+        // async way
+        try{
+            const addedbook = await book.save();
+            res.json(addedbook);
+        }catch(err){
+            res.status(400).json({ message: err });
+        }
+    }
+})
+
+booksearch.post('/extendedupvote/:bookid/:currentUserEmail', async (req,res) => {
+    try{
+        // find post by Owner Email
+        const book = await Book.findOne({bookid: req.params.bookid});
+        //console.log(post.text);
+        // check if currentUserEmail in the likesList or not and update
+        if(book.upvotelist.includes(req.params.currentUserEmail)){
+            let index = book.upvotelist.indexOf(req.params.currentUserEmail);
+            let newUpvotes = book.upvotelist;
+            newUpvotes.splice(index, 1);
+            const updatedpost = await Book.updateOne({bookid: book.bookid}, {$set: {upvotelist: newUpvotes}});
+            //var user = await User.findOneAndUpdate(
+              //  {email: req.params.postOwnerEmail},
+                //{$set: {notifPostID: user.notifEmailAction.set(req.params.postOwnerEmail, "Liked")}}
+                //)
+
+            // check for empty array?
+            res.send({"count": String(newUpvotes.length),
+            "likestatus": "NoLike",
+            "newLikesList": newUpvotes});
+        }else{
+            let newUpvotes = book.upvotelist;
+            newUpvotes.push(req.params.currentUserEmail);
+            const updatedpost = await Book.updateOne({bookid: book.bookid}, {$set: {upvotelist: newUpvotes}});
+            res.send({"count": String(newUpvotes.length),
+            "likestatus": "Like",
+            "newLikesList": newUpvotes});
+        }
+    }catch(err){
+        res.status(400).json({ message : err });
+    }
+})
+
+booksearch.get('/extendedallcomments/:bookid', async(req,res)=>{
+    try{
+        const bookcomments = await BookComment.find({bookid: req.params.bookid});
+        res.json(bookcomments); 
+        //console.log(postcomments);
+    }catch(err){
+        res.json({message : err});
+    }
+});
+
+booksearch.post('/extendedaddcomment', async (req,res)=>{
+    
+    const NewComment = new BookComment ({
+      
+      bookid: req.body.bookid,
+      email: req.body.email,
+      name: req.body.name,
+      picurl: req.body.picurl,
+      text: req.body.text,
+      date: req.body.date
+
+  });
+  try{
+    const addedComment = await NewComment.save();
+    res.json(addedComment);
+}catch(err){
+    res.status(400).json({ message: err });
+}
+});
+
+booksearch.post('/extendedaddfav/:bookid/:currentUserEmail', async (req,res) => {
+    try{
+        // find post by Owner Email
+        const book = await Book.findOne({bookid: req.params.bookid});
+        //console.log(post.text);
+        // check if currentUserEmail in the likesList or not and update
+        if(book.favlist.includes(req.params.currentUserEmail)){
+            let index = book.favlist.indexOf(req.params.currentUserEmail);
+            let newFavList = book.favlist;
+            newFavList.splice(index, 1);
+            const updatedpost = await Book.updateOne({bookid: book.bookid}, {$set: {favlist: newFavList}});
+            //var user = await User.findOneAndUpdate(
+              //  {email: req.params.postOwnerEmail},
+                //{$set: {notifPostID: user.notifEmailAction.set(req.params.postOwnerEmail, "Liked")}}
+                //)
+
+            // check for empty array?
+            res.send({"count": String(newFavList.length),
+            "likestatus": "NoLike",
+            "newLikesList": newFavList});
+        }else{
+            let newFavList = book.favlist;
+            newFavList.push(req.params.currentUserEmail);
+            const updatedpost = await Book.updateOne({bookid: book.bookid}, {$set: {favlist: newFavList}});
+            res.send({"count": String(newFavList.length),
+            "likestatus": "Like",
+            "newLikesList": newFavList});
+        }
+    }catch(err){
+        res.status(400).json({ message : err });
+    }
+})
 
 
 module.exports = booksearch;

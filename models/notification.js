@@ -33,4 +33,7 @@ const notificationSchema = new mongoose.Schema({
 
 });
 
+// currentemail : the user who did the action
+// email : the post's owner email, so when u getallnotifications , u use this. > find all the notification with ur email as owner
+
 module.exports = mongoose.model('Notification', notificationSchema);
