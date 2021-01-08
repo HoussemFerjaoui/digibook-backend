@@ -5,6 +5,10 @@ const Post = require('../models/post');
 const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const Book = require('../models/book');
+const BooksComment = require('../models/bookcomment');
+const Notification = require('../models/notification');
+const Comment = require('../models/comment');
+
 
 
 
@@ -33,15 +37,36 @@ profile.post('/uploadpic/:CurrentUserEmail', async(req,res) => {
         } else {
             let dest = req.file.filename;
             try{
+                //update user profile pic in Users
                 const uSpecificschema = await User.updateOne(
                     { email : req.params.CurrentUserEmail },
                     { $set: { picurl : dest }
                     });
-                const post = await Post.update(
+                    // update user profile pic in Posts
+                const posts = await Post.update(
                     { email: req.params.CurrentUserEmail },
                     { $set: { picurl : dest } },
                     { multi: true}
                 )
+                // update user profile pic in BooksComment
+                const book_comments = await BooksComment.update(
+                    { email: req.params.CurrentUserEmail },
+                    { $set: { picurl : dest } },
+                    { multi: true}
+                )
+                // update user profile pic in PostsComments
+                const posts_comments = await Comment.update(
+                    { email: req.params.CurrentUserEmail },
+                    { $set: { picurl : dest } },
+                    { multi: true}
+                )
+                // update user profile pic in Notifications
+                const notifs = await Notification.update(
+                    { currentemail: req.params.CurrentUserEmail },
+                    { $set: { picurl : dest } },
+                    { multi: true}
+                )
+
                 res.send(req.file.filename); // or res.send("updated!")
             }catch(err){
                 res.json({ message : err });
@@ -81,6 +106,17 @@ profile.get('/allfavbooks/:email', async(req,res)=>{
     try{
         const favbooks = await Book.find({favlist: { "$in": req.params.email}});
         res.json(favbooks); 
+        //console.log(postcomments);
+    }catch(err){
+        res.json({message : err});
+    }
+});
+
+// get all myposts
+profile.get('/allmyposts/:email', async(req,res)=>{
+    try{
+        const myposts = await Post.find({email: req.params.email});
+        res.json(myposts);
         //console.log(postcomments);
     }catch(err){
         res.json({message : err});
