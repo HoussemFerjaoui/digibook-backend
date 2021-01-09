@@ -95,6 +95,71 @@ profile.post('/update/:email/:password', async(req,res) => {
         const uSpecificschema = await User.replaceOne(
             { email : req.params.email },
             user);
+        // update all other user info models.
+        
+        // update userinfo in posts
+        const posts = await Post.update(
+            { email: req.params.email },
+            { $set: { email : req.body.email, name : req.body.name } },
+            { multi: true}
+        )
+
+
+        //update posts likesList
+        try {
+            const postsLikes = await Post.update(
+                { likesList: { "$in": req.params.email} },
+                { $set: { "likesList.$" : req.body.email } },
+                { multi: true}
+            )
+            console.log("we made it bruh");
+        } catch (error) {
+            console.log(err);
+        }
+
+
+        // update userinfo in book comments
+        const book_comments = await BooksComment.update(
+            { email: req.params.email },
+            { $set: { email : req.body.email, name : req.body.name } },
+            { multi: true}
+        )
+
+        // update userinfo in posts comments
+        const posts_comments = await Comment.update(
+            { email: req.params.email },
+            { $set: { email : req.body.email, name : req.body.name } },
+            { multi: true}
+        )
+
+        // update userinfo in Notifications part 1 : to who the notif is been done owners
+        const Notif1 = await Notification.update(
+            { currentemail: req.params.email },
+            { $set: { currentemail : req.body.email } },
+            { multi: true}
+        )
+        // update userinfo in Notification part 2 : the ones who did the notif
+        const Notif2 = await Notification.update(
+            { email: req.params.email },
+            { $set: { email : req.body.email, name : req.body.name } },
+            { multi: true}
+        )
+
+        // update books likesList
+        const booksLikes = await Book.update(
+            { upvotelist: { "$in": req.params.email} },
+            { $set: { "upvotelist.$" : req.body.email } },
+            { multi: true}
+        )
+
+        //update books favList
+        const booksFavs = await Book.update(
+            { favlist: { "$in": req.params.email} },
+            { $set: { "favlist.$" : req.body.email } },
+            { multi: true}
+        )
+
+
         res.json(user); // or res.send("updated!")
     }catch(err){
         res.json({ message : err });
