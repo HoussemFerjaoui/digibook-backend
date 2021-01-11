@@ -9,6 +9,9 @@ const BooksComment = require('../models/bookcomment');
 const Notification = require('../models/notification');
 const Comment = require('../models/comment');
 
+const { registerValidation, loginValidation } = require('../functions/validation');
+
+
 
 
 
@@ -79,6 +82,19 @@ profile.post('/uploadpic/:CurrentUserEmail', async(req,res) => {
 
 //TODO: Control saisie here too. like register.
 profile.post('/update/:email/:password', async(req,res) => {
+
+        // input data validation
+        const {error} = registerValidation(req.body);
+        if (error) return res.status(400).send(error.details[0].message);
+    
+        //Confirm Password check
+        if(req.body.ConfirmPassword.localeCompare(req.body.password)) return res.status(400).send("Wrong Confirm Password!"); 
+        
+        // checking if user already exist in db
+        //TODO: make the find into a global function
+        const emailExist = await User.findOne({email: req.body.email});
+        if(emailExist) return res.status(400).send("User already exist");
+
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
     var user = new User();

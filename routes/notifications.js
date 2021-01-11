@@ -23,12 +23,15 @@ notifications.post('/addnotification', async (req,res) =>{
         action: req.body.action,
         currentemail: req.body.currentemail,
         picurl: req.body.picurl,
-        notificationid: req.body.notificationid
+        notificationid: req.body.notificationid // postID = DATE
         //the rest should be defaulted to null, since its new post
     });
     // async way
     try{
+        if(req.body.email != req.body.currentemail){
         const addednotification = await notification.save();
+        console.log("added notif mriglin");
+        }
         res.json(addednotification);
     }catch(err){
         res.status(400).json({ message: err });
