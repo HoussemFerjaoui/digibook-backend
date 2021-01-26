@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router(); //Use the express.Router class to create modular, mountable route handlers. A Router instance is a complete middleware and routing system; for this reason, it is often referred to as a “mini-app”.
-const testschema = require('../models/dbtest'); // load our model
+const User = require('../models/User');
+//const testschema = require('../models/dbtest'); // load our model
 
 //gets back all "testscehams" (how to bind these data with just this route)
 router.get('/', async(req,res) => {
     // res.send('you are on testroute'); you cant have multiple res, once responded its done, just use res.end() anyways for this kinda of response, ur not answering with data
     try{
-        const Allschemas = await testschema.find();
+        const Allschemas = await User.find();
         res.json(Allschemas);
     }catch(err){
         res.json({ message : err });
@@ -16,7 +17,7 @@ router.get('/', async(req,res) => {
 //gets back a specific "testscehams"(filtering by id)
 router.get('/:thePassedId', async(req,res) => {
     try{
-        const Specificschema = await testschema.findById(req.params.thePassedId);
+        const Specificschema = await User.findById(req.params.thePassedId);
         res.json(Specificschema);
     }catch(err){
         res.json({ message : err });
@@ -25,7 +26,7 @@ router.get('/:thePassedId', async(req,res) => {
 
 // submits a "testschema"
 router.post('/', async (req,res) =>{
-    const aSchema = new testschema({
+    const aSchema = new User({
         title: req.body.title,
         date: req.body.date
     });
@@ -48,7 +49,7 @@ router.post('/', async (req,res) =>{
 //update a "testschema"
 router.patch('/:thePassedId', async(req,res) => {
     try{
-        const uSpecificschema = await testschema.updateOne(
+        const uSpecificschema = await User.updateOne(
             { _id : req.params.thePassedId },
             { $set: { title : req.body.title }
             });
@@ -61,7 +62,7 @@ router.patch('/:thePassedId', async(req,res) => {
 // deletes a "testschema" by id
 router.delete('/:thePassedId', async(req,res) => {
     try{
-        const rSpecificschema = await testschema.remove({ _id : req.params.thePassedId });
+        const rSpecificschema = await User.remove({ _id : req.params.thePassedId });
         res.json(rSpecificschema); // or res.send("removed successfuly")
     }catch(err){
         res.json({ message : err });

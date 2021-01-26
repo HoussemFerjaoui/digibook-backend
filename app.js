@@ -4,6 +4,9 @@ const app = express();
 const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
+app.use(express.static('uploads'));
+app.use(express.static('uploads/profileimages'));
+
 // tessereact.js
 const Tesseract = require('tesseract.js');
 
@@ -20,18 +23,37 @@ mongoose.connect(process.env.DB_CONNECTION,options, ()=>
 
 
 
-// import routes modules
+// import routes modules:
+// testroute
 const testroute = require('./routes/testroute');
-app.use('/testroute',testroute);
+app.use('/dbtest',testroute);
+// home
+const home = require('./routes/home');
+app.use('/api/user/home', home);
+// booksearch
 const booksearch = require('./routes/booksearch');
 app.use('/booksearch', booksearch);
+// load auth.js
+const auth = require('./routes/auth');
+app.use('/api/user', auth);
+// load CurrentSession.js
+const CurrentSession = require("./functions/CurrentSession");
+app.use("/api/CurrentSession", CurrentSession);
+// Load profile.js
+const profile = require("./routes/profile");
+app.use("/api/user/profile", profile);
+// Load Notifications.js
+const notifications = require("./routes/notifications");
+app.use("/api/user/notifications", notifications);
+
+
 
 //middlewares
 app.use('/ocrtest', (req,res) => {
     console.log('tessereact example exec');
-    res.send("this is ocr tesseract test page")
+    res.send("this is ocr tesseract test page check console")
     Tesseract.recognize(
-      'https://tesseract.projectnaptha.com/img/eng_bw.png',
+      'https://img.picturequotes.com/2/991/990443/planting-a-flowers-like-opening-a-book-because-either-way-youre-starting-something-and-your-gardens-quote-1.jpg',
       'eng',
       { logger: m => console.log(m) }
     ).then(({ data: { text } }) => {
@@ -50,6 +72,10 @@ app.get('/', (req, res) => {
     res.send('Welcome!');
 });
 
+app.get('/hey', (req,res) => {
+  res.send("hey");
+});
+
 //route param test
 app.get('/users/:userId/books/:bookId', function (req, res) {
     res.send(req.params)
@@ -58,7 +84,4 @@ app.get('/users/:userId/books/:bookId', function (req, res) {
 
 
 // listen to server
-app.listen(3000);
-
-
-//hello there 
+app.listen(3000, "0.0.0.0");
